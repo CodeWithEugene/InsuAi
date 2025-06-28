@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Insurance Underwriting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for a techy feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for techy theme */
+        body {
+            font-family: 'Space Mono', monospace; /* Techy font */
+            background-color: #1a1a2e; /* Dark background */
+            color: #e0e0e0; /* Light text for contrast */
+        }
+        .chat-container {
+            height: calc(100vh - 180px);
+        }
+        @media (min-width: 768px) {
+            .chat-container {
+                height: calc(100vh - 160px);
+            }
+        }
+        .typing-indicator::after {
+            content: "...";
+            animation: typing 1.5s infinite;
+        }
+        @keyframes typing {
+            0% { content: "."; }
+            33% { content: ".."; }
+            66% { content: "..."; }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .risk-bar {
+            transition: width 1s ease-in-out;
+        }
+        /* Glow effect for cards and interactive elements */
+        .glow-shadow {
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.6), 0 0 25px rgba(0, 191, 255, 0.4); /* Electric blue glow */
+        }
+        .inner-glow {
+            box-shadow: inset 0 0 8px rgba(0, 191, 255, 0.4);
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.8);
+            transform: translateY(-2px);
+        }
+        .input-glow:focus {
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.8);
+            border-color: #00bfff;
+        }
+        .quick-reply-btn:hover {
+            background-color: #00bfff !important;
+            color: #1a1a2e !important;
+            border-color: #00bfff !important;
+            box-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
+        }
+        /* Subtle background pattern */
+        .tech-background {
+            background-image: radial-gradient(circle at center, #2c073a 0%, #1a1a2e 70%);
+            background-size: 200% 200%;
+            animation: gradient-animation 10s ease infinite;
+        }
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="tech-background min-h-screen flex flex-col">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-purple-900 to-blue-900 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-shield-alt text-2xl text-cyan-400"></i>
+                    <h1 class="text-xl md:text-2xl font-bold text-cyan-300">AI Underwriting Assistant</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="hidden md:inline-block text-sm text-gray-300">Secure • Fast • Accurate</span>
+                    <button id="loginBtn" class="bg-cyan-500 text-purple-900 px-4 py-2 rounded-full text-sm font-semibold hover:bg-cyan-400 transition transform btn-glow">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+            <!-- Left Panel - Progress/Info -->
+            <div class="w-full md:w-1/3 lg:w-1/4 bg-gray-900 rounded-xl shadow-lg p-6 h-fit border border-cyan-700 glow-shadow">
+                <div class="mb-6">
+                    <h2 class="text-lg font-bold text-cyan-400 mb-2">Your Application Progress</h2>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5 inner-glow">
+                        <div id="progressBar" class="bg-cyan-500 h-2.5 rounded-full risk-bar" style="width: 20%"></div>
+                    </div>
+                    <p class="text-sm text-gray-400 mt-2">Step 1 of 5</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="p-4 bg-purple-900 rounded-lg border border-purple-700">
+                        <h3 class="font-semibold text-purple-300 mb-1">Estimated Time</h3>
+                        <p class="text-sm text-gray-300"><i class="fas fa-clock mr-2 text-purple-500"></i> 3-5 minutes</p>
+                    </div>
+
+                    <div class="p-4 bg-green-900 rounded-lg border border-green-700">
+                        <h3 class="font-semibold text-green-300 mb-1">Current Benefits</h3>
+                        <ul class="text-sm space-y-1 text-gray-300">
+                            <li><i class="fas fa-check-circle mr-2 text-green-500"></i> Instant quote</li>
+                            <li><i class="fas fa-check-circle mr-2 text-green-500"></i> No paperwork</li>
+                            <li><i class="fas fa-check-circle mr-2 text-green-500"></i> AI-powered accuracy</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-blue-900 rounded-lg border border-blue-700">
+                        <h3 class="font-semibold text-blue-300 mb-1">Documents Needed</h3>
+                        <ul class="text-sm space-y-1 text-gray-300">
+                            <li><i class="fas fa-id-card mr-2 text-blue-500"></i> Driver's license</li>
+                            <li><i class="fas fa-car mr-2 text-blue-500"></i> Vehicle registration</li>
+                            <li><i class="fas fa-history mr-2 text-blue-500"></i> Driving history (optional)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Chat Interface -->
+            <div class="w-full md:w-2/3 lg:w-3/4 bg-gray-900 rounded-xl shadow-lg overflow-hidden flex flex-col border border-cyan-700 glow-shadow">
+                <!-- Chat Header -->
+                <div class="bg-gradient-to-r from-blue-900 to-purple-900 text-white p-4 flex items-center justify-between border-b border-cyan-700">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-cyan-700 flex items-center justify-center border border-cyan-500">
+                            <i class="fas fa-robot text-xl text-cyan-300"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-cyan-300">AI Underwriter</h2>
+                            <p class="text-xs opacity-80 text-gray-300">Powered by machine learning</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="p-2 rounded-full hover:bg-cyan-800 transition text-gray-300">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div id="chatMessages" class="chat-container overflow-y-auto p-4 space-y-4 flex-1 bg-gray-800">
+                    <!-- Welcome Message -->
+                    <div class="flex items-start space-x-3 fade-in">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-800 flex items-center justify-center border border-cyan-600">
+                            <i class="fas fa-robot text-cyan-400"></i>
+                        </div>
+                        <div class="bg-gray-700 rounded-xl p-4 max-w-[85%] border border-gray-600">
+                            <p class="text-gray-200">Hello! I'm your AI Underwriting Assistant. I'll guide you through getting an accurate insurance quote for your vehicle. This process typically takes about 5 minutes.</p>
+                            <p class="text-gray-200 mt-2">Shall we begin?</p>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button class="quick-reply-btn bg-gray-900 text-cyan-400 border border-cyan-600 px-3 py-1 rounded-full text-sm hover:bg-cyan-700 transition">
+                                    Let's get started
+                                </button>
+                                <button class="quick-reply-btn bg-gray-900 text-gray-400 border border-gray-600 px-3 py-1 rounded-full text-sm hover:bg-gray-700 transition">
+                                    How does this work?
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Response (Example) -->
+                    <div class="flex justify-end fade-in">
+                        <div class="bg-blue-600 text-white rounded-xl p-4 max-w-[85%] border border-blue-500">
+                            <p>Let's get started</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Response (Example) -->
+                    <div class="flex items-start space-x-3 fade-in">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-800 flex items-center justify-center border border-cyan-600">
+                            <i class="fas fa-robot text-cyan-400"></i>
+                        </div>
+                        <div class="bg-gray-700 rounded-xl p-4 max-w-[85%] border border-gray-600">
+                            <p class="text-gray-200">Great! First, I'll need some basic information about you and your vehicle.</p>
+                            <p class="text-gray-200 mt-2">What is your full legal name?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="border-t border-cyan-700 p-4 bg-gray-900">
+                    <div class="flex items-center space-x-2">
+                        <input 
+                            id="messageInput" 
+                            type="text" 
+                            placeholder="Type your message here..." 
+                            class="flex-1 bg-gray-700 text-white border border-cyan-600 rounded-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent input-glow"
+                        >
+                        <button id="sendBtn" class="w-12 h-12 rounded-full bg-cyan-600 text-white flex items-center justify-center hover:bg-cyan-700 transition transform btn-glow">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <button class="quick-reply-btn bg-gray-900 text-cyan-400 border border-cyan-600 px-3 py-1 rounded-full text-sm hover:bg-cyan-700 transition">
+                            John Doe
+                        </button>
+                        <button class="quick-reply-btn bg-gray-900 text-gray-400 border border-gray-600 px-3 py-1 rounded-full text-sm hover:bg-gray-700 transition">
+                            How is this information used?
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Risk Assessment Modal (Hidden by default) -->
+        <div id="riskModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden">
+            <div class="bg-gray-900 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-cyan-700 glow-shadow">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-cyan-400">Your Risk Assessment</h3>
+                        <button id="closeModal" class="text-gray-400 hover:text-cyan-400 transition">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-300 mb-2">Overall Risk Score</h4>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 rounded-full bg-cyan-900 flex items-center justify-center text-cyan-400 font-bold text-xl border border-cyan-700">
+                                    72
+                                </div>
+                                <div class="flex-1">
+                                    <div class="w-full bg-gray-700 rounded-full h-2.5 inner-glow">
+                                        <div class="risk-bar bg-cyan-500 h-2.5 rounded-full" style="width: 72%"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-400 mt-2">Lower than 68% of similar profiles</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 border border-gray-700 rounded-lg bg-gray-800">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h5 class="font-medium text-gray-200">Driving History</h5>
+                                    <span class="text-sm px-2 py-1 bg-green-900 text-green-300 rounded-full border border-green-700">Low Risk</span>
+                                </div>
+                                <p class="text-sm text-gray-400">No accidents in last 5 years</p>
+                            </div>
+                            
+                            <div class="p-4 border border-gray-700 rounded-lg bg-gray-800">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h5 class="font-medium text-gray-200">Vehicle Type</h5>
+                                    <span class="text-sm px-2 py-1 bg-yellow-900 text-yellow-300 rounded-full border border-yellow-700">Medium Risk</span>
+                                </div>
+                                <p class="text-sm text-gray-400">2018 SUV with safety features</p>
+                            </div>
+                            
+                            <div class="p-4 border border-gray-700 rounded-lg bg-gray-800">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h5 class="font-medium text-gray-200">Location</h5>
+                                    <span class="text-sm px-2 py-1 bg-red-900 text-red-300 rounded-full border border-red-700">High Risk</span>
+                                </div>
+                                <p class="text-sm text-gray-400">Urban area with higher claim frequency</p>
+                            </div>
+                            
+                            <div class="p-4 border border-gray-700 rounded-lg bg-gray-800">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h5 class="font-medium text-gray-200">Credit Score</h5>
+                                    <span class="text-sm px-2 py-1 bg-green-900 text-green-300 rounded-full border border-green-700">Low Risk</span>
+                                </div>
+                                <p class="text-sm text-gray-400">Excellent credit history</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-cyan-900 p-4 rounded-lg border border-cyan-700">
+                            <h4 class="font-semibold text-cyan-300 mb-2">Your Personalized Quote</h4>
+                            <div class="flex items-end justify-between">
+                                <div>
+                                    <p class="text-3xl font-bold text-white">$87<span class="text-lg text-cyan-200">/month</span></p>
+                                    <p class="text-sm text-gray-300">Comprehensive coverage</p>
+                                </div>
+                                <button class="bg-cyan-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-cyan-700 transition transform btn-glow">
+                                    Purchase Policy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const riskModal = document.getElementById('riskModal');
+            const closeModal = document.getElementById('closeModal');
+            const loginBtn = document.getElementById('loginBtn');
+            const progressBar = document.getElementById('progressBar');
+            
+            // Sample conversation flow
+            const conversationFlow = [
+                {
+                    question: "What is your full legal name?",
+                    quickReplies: ["John Doe", "Jane Smith", "How is this information used?"],
+                    progress: 20
+                },
+                {
+                    question: "What is your date of birth? (MM/DD/YYYY)",
+                    quickReplies: ["01/15/1985", "05/22/1990", "Why do you need my age?"],
+                    progress: 35
+                },
+                {
+                    question: "What is the make and model of your vehicle?",
+                    quickReplies: ["Toyota Camry 2018", "Honda CR-V 2020", "Ford F-150 2019"],
+                    progress: 50
+                },
+                {
+                    question: "How many years of driving experience do you have?",
+                    quickReplies: ["5 years", "10 years", "15+ years"],
+                    progress: 65
+                },
+                {
+                    question: "Have you had any accidents or claims in the last 5 years?",
+                    quickReplies: ["No", "Yes, 1 accident", "Yes, multiple"],
+                    progress: 80
+                },
+                {
+                    question: "Finally, what is your estimated annual mileage?",
+                    quickReplies: ["Under 10,000", "10,000-15,000", "Over 15,000"],
+                    progress: 95
+                }
+            ];
+            
+            let currentStep = 0;
+            
+            // Function to add a message to the chat
+            function addMessage(text, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `flex items-start space-x-3 fade-in ${isUser ? 'justify-end' : ''}`;
+                
+                if (!isUser) {
+                    messageDiv.innerHTML = `
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-800 flex items-center justify-center border border-cyan-600">
+                            <i class="fas fa-robot text-cyan-400"></i>
+                        </div>
+                        <div class="bg-gray-700 rounded-xl p-4 max-w-[85%] border border-gray-600">
+                            <p class="text-gray-200">${text}</p>
+                            ${currentStep < conversationFlow.length ? `
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                ${conversationFlow[currentStep].quickReplies.map(reply => 
+                                    `<button class="quick-reply-btn bg-gray-900 text-cyan-400 border border-cyan-600 px-3 py-1 rounded-full text-sm hover:bg-cyan-700 transition">
+                                        ${reply}
+                                    </button>`
+                                ).join('')}
+                            </div>` : ''}
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="bg-blue-600 text-white rounded-xl p-4 max-w-[85%] border border-blue-500">
+                            <p>${text}</p>
+                        </div>
+                    `;
+                }
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                if (!isUser && currentStep < conversationFlow.length) {
+                    progressBar.style.width = `${conversationFlow[currentStep].progress}%`;
+                    
+                    // Re-attach event listeners to new quick reply buttons
+                    setTimeout(() => {
+                        document.querySelectorAll('.quick-reply-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const replyText = this.textContent.trim();
+                                addMessage(replyText, true);
+                                
+                                // Move to next question if not a "help" question
+                                if (!replyText.startsWith("How") && !replyText.startsWith("Why")) {
+                                    currentStep++;
+                                    if (currentStep < conversationFlow.length) {
+                                        setTimeout(() => {
+                                            addMessage(conversationFlow[currentStep].question, false);
+                                        }, 1000);
+                                    } else {
+                                        // Show final assessment
+                                        setTimeout(() => {
+                                            addMessage("Thank you! I'm now analyzing your information to generate your personalized quote...", false);
+                                            
+                                            setTimeout(() => {
+                                                addMessage("Analysis complete! Here's your risk assessment and quote:", false);
+                                                riskModal.classList.remove('hidden');
+                                                
+                                                // Animate risk bar
+                                                setTimeout(() => {
+                                                    document.querySelector('.risk-bar').style.width = '72%';
+                                                }, 300);
+                                            }, 2000);
+                                        }, 1000);
+                                    }
+                                }
+                            });
+                        });
+                    }, 100);
+                }
+            }
+            
+            // Send button click handler
+            sendBtn.addEventListener('click', function() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    messageInput.value = '';
+                    
+                    // Simulate AI response
+                    setTimeout(() => {
+                        if (currentStep < conversationFlow.length) {
+                            addMessage(conversationFlow[currentStep].question, false);
+                        }
+                    }, 800);
+                }
+            });
+            
+            // Initial quick reply button click handler (for the very first set of buttons)
+            document.querySelectorAll('.quick-reply-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const replyText = this.textContent.trim();
+                    addMessage(replyText, true);
+                    
+                    if (!replyText.startsWith("How") && !replyText.startsWith("Why")) {
+                        currentStep++;
+                        if (currentStep < conversationFlow.length) {
+                            setTimeout(() => {
+                                addMessage(conversationFlow[currentStep].question, false);
+                            }, 1000);
+                        } else {
+                            setTimeout(() => {
+                                addMessage("Thank you! I'm now analyzing your information to generate your personalized quote...", false);
+                                setTimeout(() => {
+                                    addMessage("Analysis complete! Here's your risk assessment and quote:", false);
+                                    riskModal.classList.remove('hidden');
+                                    setTimeout(() => {
+                                        document.querySelector('.risk-bar').style.width = '72%';
+                                    }, 300);
+                                }, 2000);
+                            }, 1000);
+                        }
+                    }
+                });
+            });
+            
+            // Modal close button
+            closeModal.addEventListener('click', function() {
+                riskModal.classList.add('hidden');
+            });
+            
+            // Login button
+            loginBtn.addEventListener('click', function() {
+                // Replaced alert with a custom message box for better UX
+                const messageBox = document.createElement('div');
+                messageBox.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-[9999]';
+                messageBox.innerHTML = `
+                    <div class="bg-gray-900 rounded-xl shadow-xl max-w-sm w-full p-6 border border-cyan-700 glow-shadow text-center">
+                        <h3 class="text-xl font-bold text-cyan-400 mb-4">Authentication</h3>
+                        <p class="text-gray-200 mb-6">Internet Identity authentication would appear here in a production environment.</p>
+                        <button class="bg-cyan-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-cyan-700 transition transform btn-glow" onclick="this.closest('.fixed').remove()">
+                            Close
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(messageBox);
+            });
+            
+            // Allow pressing Enter to send message
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
