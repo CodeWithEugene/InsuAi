@@ -3,490 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Powered Insurance Underwriting</title>
+    <title>InsuAi: AI-Powered Insurance Underwriting Infographic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts for a techy feel -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Custom CSS for techy theme */
         body {
-            font-family: 'Space Mono', monospace; /* Techy font */
-            background-color: #1a1a2e; /* Dark background */
-            color: #e0e0e0; /* Light text for contrast */
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
         }
-        .chat-container {
-            height: calc(100vh - 180px);
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
         }
         @media (min-width: 768px) {
-            .chat-container {
-                height: calc(100vh - 160px);
+            .chart-container {
+                height: 350px;
             }
         }
-        .typing-indicator::after {
-            content: "...";
-            animation: typing 1.5s infinite;
+        .gradient-text {
+            background: linear-gradient(to right, #118AB2, #06D6A0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        @keyframes typing {
-            0% { content: "."; }
-            33% { content: ".."; }
-            66% { content: "..."; }
+        .header-bg {
+            background: linear-gradient(to bottom right, #e0f2f7, #c8e6c9);
+            padding: 3rem 0;
+            border-radius: 0 0 2rem 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        .fade-in {
-            animation: fadeIn 0.3s ease-in;
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
-        .risk-bar {
-            transition: width 1s ease-in-out;
+        .flow-step {
+            border: 2px solid #118AB2;
+            background-color: #ffffff;
+            color: #073B4C;
+            transition: all 0.3s ease-in-out;
         }
-        /* Glow effect for cards and interactive elements */
-        .glow-shadow {
-            box-shadow: 0 0 15px rgba(0, 191, 255, 0.6), 0 0 25px rgba(0, 191, 255, 0.4); /* Electric blue glow */
+        .flow-step:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(17, 138, 178, 0.2);
         }
-        .inner-glow {
-            box-shadow: inset 0 0 8px rgba(0, 191, 255, 0.4);
+        .flow-arrow {
+            color: #118AB2;
+            font-size: 2.5rem;
+            line-height: 1;
+            margin: 0.5rem 0;
+            animation: bounceArrow 1.5s infinite;
         }
-        .btn-glow:hover {
-            box-shadow: 0 0 10px rgba(0, 191, 255, 0.8);
-            transform: translateY(-2px);
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
         }
-        .input-glow:focus {
-            box-shadow: 0 0 10px rgba(0, 191, 255, 0.8);
-            border-color: #00bfff;
+        .timeline-item {
+            position: relative;
+            padding-left: 2.5rem;
         }
-        .quick-reply-btn:hover {
-            background-color: #00bfff !important;
-            color: #1a1a2e !important;
-            border-color: #00bfff !important;
-            box-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -15px; /* Adjust to align with the border-l-2 */
+            top: 1.5rem;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #FF6B6B; /* Default color, overridden by specific phases */
+            border: 4px solid #F8F9FA;
+            box-shadow: 0 0 0 2px #118AB2;
+            transition: all 0.3s ease-in-out;
         }
-        /* Subtle background pattern */
-        .tech-background {
-            background-image: radial-gradient(circle at center, #2c073a 0%, #1a1a2e 70%);
-            background-size: 200% 200%;
-            animation: gradient-animation 10s ease infinite;
+        .timeline-item:hover::before {
+            transform: translateY(-50%) scale(1.2);
+            box-shadow: 0 0 0 6px #118AB2;
         }
-        @keyframes gradient-animation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .timeline-item:nth-child(1)::before { background-color: #FF6B6B; }
+        .timeline-item:nth-child(2)::before { background-color: #FFD166; }
+        .timeline-item:nth-child(3)::before { background-color: #06D6A0; }
+        .timeline-item:nth-child(4)::before { background-color: #118AB2; }
+
+        .section-bg-light {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 3rem;
         }
     </style>
 </head>
-<body class="tech-background min-h-screen flex flex-col">
-    <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="bg-gradient-to-r from-purple-900 to-blue-900 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-shield-alt text-2xl text-cyan-400"></i>
-                    <h1 class="text-xl md:text-2xl font-bold text-cyan-300">AI Underwriting Assistant</h1>
+<body class="text-[#073B4C]">
+
+    <div class="header-bg text-center">
+        <h1 class="text-5xl md:text-7xl font-black gradient-text leading-tight">InsuAi</h1>
+        <p class="mt-4 text-xl md:text-3xl font-light text-gray-700">Revolutionizing Insurance Underwriting with AI</p>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <section class="my-24">
+            <h2 class="text-3xl font-bold text-center mb-4">The Problem with Traditional Underwriting</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">The current manual process is slow, expensive, and frustrating for customers. It's a system ripe for disruption, leading to missed opportunities and inconsistent service.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="kpi-card p-6">
+                    <div class="text-5xl font-extrabold text-[#FF6B6B]">2-5 Days</div>
+                    <div class="mt-2 text-lg font-semibold">Processing Time ⏳</div>
+                    <p class="text-sm text-gray-500 mt-1">Customers face lengthy waits for quotes, leading to high abandonment rates and frustration.</p>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <span class="hidden md:inline-block text-sm text-gray-300">Secure • Fast • Accurate</span>
-                    <button id="loginBtn" class="bg-cyan-500 text-purple-900 px-4 py-2 rounded-full text-sm font-semibold hover:bg-cyan-400 transition transform btn-glow">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Sign In
-                    </button>
+                <div class="kpi-card p-6">
+                    <div class="text-5xl font-extrabold text-[#FFD166]">60-80%</div>
+                    <div class="mt-2 text-lg font-semibold">Higher Costs 💸</div>
+                    <p class="text-sm text-gray-500 mt-1">Manual data entry and assessment significantly inflate operational overheads for insurers.</p>
                 </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="flex-1 container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
-            <!-- Left Panel - Progress/Info -->
-            <div class="w-full md:w-1/3 lg:w-1/4 bg-gray-900 rounded-xl shadow-lg p-6 h-fit border border-cyan-700 glow-shadow">
-                <div class="mb-6">
-                    <h2 class="text-lg font-bold text-cyan-400 mb-2">Your Application Progress</h2>
-                    <div class="w-full bg-gray-700 rounded-full h-2.5 inner-glow">
-                        <div id="progressBar" class="bg-cyan-500 h-2.5 rounded-full risk-bar" style="width: 20%"></div>
-                    </div>
-                    <p class="text-sm text-gray-400 mt-2">Step 1 of 5</p>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="p-4 bg-purple-900 rounded-lg border border-purple-700">
-                        <h3 class="font-semibold text-purple-300 mb-1">Estimated Time</h3>
-                        <p class="text-sm text-gray-300"><i class="fas fa-clock mr-2 text-purple-500"></i> 3-5 minutes</p>
-                    </div>
-
-                    <div class="p-4 bg-green-900 rounded-lg border border-green-700">
-                        <h3 class="font-semibold text-green-300 mb-1">Current Benefits</h3>
-                        <ul class="text-sm space-y-1 text-gray-300">
-                            <li><i class="fas fa-check-circle mr-2 text-green-500"></i> Instant quote</li>
-                            <li><i class="fas fa-check-circle mr-2 text-green-500"></i> No paperwork</li>
-                            <li><i class="fas fa-check-circle mr-2 text-green-500"></i> AI-powered accuracy</li>
-                        </ul>
-                    </div>
-
-                    <div class="p-4 bg-blue-900 rounded-lg border border-blue-700">
-                        <h3 class="font-semibold text-blue-300 mb-1">Documents Needed</h3>
-                        <ul class="text-sm space-y-1 text-gray-300">
-                            <li><i class="fas fa-id-card mr-2 text-blue-500"></i> Driver's license</li>
-                            <li><i class="fas fa-car mr-2 text-blue-500"></i> Vehicle registration</li>
-                            <li><i class="fas fa-history mr-2 text-blue-500"></i> Driving history (optional)</li>
-                        </ul>
-                    </div>
+                <div class="kpi-card p-6">
+                     <div class="text-5xl font-extrabold text-[#118AB2]">High</div>
+                    <div class="mt-2 text-lg font-semibold">Error & Inconsistency ❌</div>
+                    <p class="text-sm text-gray-500 mt-1">Human judgment introduces variability, resulting in inconsistent risk assessments and costly errors.</p>
                 </div>
             </div>
+        </section>
 
-            <!-- Right Panel - Chat Interface -->
-            <div class="w-full md:w-2/3 lg:w-3/4 bg-gray-900 rounded-xl shadow-lg overflow-hidden flex flex-col border border-cyan-700 glow-shadow">
-                <!-- Chat Header -->
-                <div class="bg-gradient-to-r from-blue-900 to-purple-900 text-white p-4 flex items-center justify-between border-b border-cyan-700">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full bg-cyan-700 flex items-center justify-center border border-cyan-500">
-                            <i class="fas fa-robot text-xl text-cyan-300"></i>
-                        </div>
-                        <div>
-                            <h2 class="font-bold text-cyan-300">AI Underwriter</h2>
-                            <p class="text-xs opacity-80 text-gray-300">Powered by machine learning</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <button class="p-2 rounded-full hover:bg-cyan-800 transition text-gray-300">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </div>
+        <section class="my-24 section-bg-light">
+            <h2 class="text-3xl font-bold text-center mb-4">The InsuAi Revolution: From Days to Minutes</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">InsuAi leverages a conversational AI chatbot and real-time machine learning models to deliver instant, accurate, and personalized insurance quotes. Our key success metrics define a new standard for the industry, ensuring efficiency and customer satisfaction.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="kpi-card">
+                    <h3 class="font-bold text-lg mb-2">Processing Time</h3>
+                    <p class="text-6xl font-black text-[#06D6A0]">&lt;5</p>
+                    <p class="font-semibold">Minutes ⚡</p>
                 </div>
-
-                <!-- Chat Messages -->
-                <div id="chatMessages" class="chat-container overflow-y-auto p-4 space-y-4 flex-1 bg-gray-800">
-                    <!-- Welcome Message -->
-                    <div class="flex items-start space-x-3 fade-in">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-800 flex items-center justify-center border border-cyan-600">
-                            <i class="fas fa-robot text-cyan-400"></i>
-                        </div>
-                        <div class="bg-gray-700 rounded-xl p-4 max-w-[85%] border border-gray-600">
-                            <p class="text-gray-200">Hello! I'm your AI Underwriting Assistant. I'll guide you through getting an accurate insurance quote for your vehicle. This process typically takes about 5 minutes.</p>
-                            <p class="text-gray-200 mt-2">Shall we begin?</p>
-                            <div class="mt-3 flex flex-wrap gap-2">
-                                <button class="quick-reply-btn bg-gray-900 text-cyan-400 border border-cyan-600 px-3 py-1 rounded-full text-sm hover:bg-cyan-700 transition">
-                                    Let's get started
-                                </button>
-                                <button class="quick-reply-btn bg-gray-900 text-gray-400 border border-gray-600 px-3 py-1 rounded-full text-sm hover:bg-gray-700 transition">
-                                    How does this work?
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User Response (Example) -->
-                    <div class="flex justify-end fade-in">
-                        <div class="bg-blue-600 text-white rounded-xl p-4 max-w-[85%] border border-blue-500">
-                            <p>Let's get started</p>
-                        </div>
-                    </div>
-
-                    <!-- AI Response (Example) -->
-                    <div class="flex items-start space-x-3 fade-in">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-800 flex items-center justify-center border border-cyan-600">
-                            <i class="fas fa-robot text-cyan-400"></i>
-                        </div>
-                        <div class="bg-gray-700 rounded-xl p-4 max-w-[85%] border border-gray-600">
-                            <p class="text-gray-200">Great! First, I'll need some basic information about you and your vehicle.</p>
-                            <p class="text-gray-200 mt-2">What is your full legal name?</p>
-                        </div>
-                    </div>
+                <div class="kpi-card">
+                    <h3 class="font-bold text-lg mb-4">Risk Assessment Accuracy</h3>
+                    <div class="chart-container h-48 max-h-48"><canvas id="accuracyChart"></canvas></div>
                 </div>
-
-                <!-- Input Area -->
-                <div class="border-t border-cyan-700 p-4 bg-gray-900">
-                    <div class="flex items-center space-x-2">
-                        <input 
-                            id="messageInput" 
-                            type="text" 
-                            placeholder="Type your message here..." 
-                            class="flex-1 bg-gray-700 text-white border border-cyan-600 rounded-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent input-glow"
-                        >
-                        <button id="sendBtn" class="w-12 h-12 rounded-full bg-cyan-600 text-white flex items-center justify-center hover:bg-cyan-700 transition transform btn-glow">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                    <div class="mt-3 flex flex-wrap gap-2">
-                        <button class="quick-reply-btn bg-gray-900 text-cyan-400 border border-cyan-600 px-3 py-1 rounded-full text-sm hover:bg-cyan-700 transition">
-                            John Doe
-                        </button>
-                        <button class="quick-reply-btn bg-gray-900 text-gray-400 border border-gray-600 px-3 py-1 rounded-full text-sm hover:bg-gray-700 transition">
-                            How is this information used?
-                        </button>
-                    </div>
+                <div class="kpi-card">
+                    <h3 class="font-bold text-lg mb-4">User Satisfaction</h3>
+                    <div class="chart-container h-48 max-h-48"><canvas id="satisfactionChart"></canvas></div>
+                </div>
+                <div class="kpi-card">
+                    <h3 class="font-bold text-lg mb-4">Manual Cost Reduction</h3>
+                    <div class="chart-container h-48 max-h-48"><canvas id="costReductionChart"></canvas></div>
                 </div>
             </div>
-        </main>
+        </section>
 
-        <!-- Risk Assessment Modal (Hidden by default) -->
-        <div id="riskModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden">
-            <div class="bg-gray-900 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-cyan-700 glow-shadow">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-bold text-cyan-400">Your Risk Assessment</h3>
-                        <button id="closeModal" class="text-gray-400 hover:text-cyan-400 transition">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="space-y-6">
-                        <div>
-                            <h4 class="font-semibold text-gray-300 mb-2">Overall Risk Score</h4>
-                            <div class="flex items-center space-x-4">
-                                <div class="w-16 h-16 rounded-full bg-cyan-900 flex items-center justify-center text-cyan-400 font-bold text-xl border border-cyan-700">
-                                    72
-                                </div>
-                                <div class="flex-1">
-                                    <div class="w-full bg-gray-700 rounded-full h-2.5 inner-glow">
-                                        <div class="risk-bar bg-cyan-500 h-2.5 rounded-full" style="width: 72%"></div>
-                                    </div>
-                                    <p class="text-sm text-gray-400 mt-2">Lower than 68% of similar profiles</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="p-4 border border-gray-700 rounded-lg bg-gray-800">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h5 class="font-medium text-gray-200">Driving History</h5>
-                                    <span class="text-sm px-2 py-1 bg-green-900 text-green-300 rounded-full border border-green-700">Low Risk</span>
-                                </div>
-                                <p class="text-sm text-gray-400">No accidents in last 5 years</p>
-                            </div>
-                            
-                            <div class="p-4 border border-gray-700 rounded-lg bg-gray-800">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h5 class="font-medium text-gray-200">Vehicle Type</h5>
-                                    <span class="text-sm px-2 py-1 bg-yellow-900 text-yellow-300 rounded-full border border-yellow-700">Medium Risk</span>
-                                </div>
-                                <p class="text-sm text-gray-400">2018 SUV with safety features</p>
-                            </div>
-                            
-                            <div class="p-4 border border-gray-700 rounded-lg bg-gray-800">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h5 class="font-medium text-gray-200">Location</h5>
-                                    <span class="text-sm px-2 py-1 bg-red-900 text-red-300 rounded-full border border-red-700">High Risk</span>
-                                </div>
-                                <p class="text-sm text-gray-400">Urban area with higher claim frequency</p>
-                            </div>
-                            
-                            <div class="p-4 border border-gray-700 rounded-lg bg-gray-800">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h5 class="font-medium text-gray-200">Credit Score</h5>
-                                    <span class="text-sm px-2 py-1 bg-green-900 text-green-300 rounded-full border border-green-700">Low Risk</span>
-                                </div>
-                                <p class="text-sm text-gray-400">Excellent credit history</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-cyan-900 p-4 rounded-lg border border-cyan-700">
-                            <h4 class="font-semibold text-cyan-300 mb-2">Your Personalized Quote</h4>
-                            <div class="flex items-end justify-between">
-                                <div>
-                                    <p class="text-3xl font-bold text-white">$87<span class="text-lg text-cyan-200">/month</span></p>
-                                    <p class="text-sm text-gray-300">Comprehensive coverage</p>
-                                </div>
-                                <button class="bg-cyan-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-cyan-700 transition transform btn-glow">
-                                    Purchase Policy
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+        <section class="my-24">
+             <h2 class="text-3xl font-bold text-center mb-4">A Market Ready for Innovation</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">The Sub-Saharan African insurance market is not only growing rapidly but also showing a strong preference for the digital-first experiences that InsuAi provides, positioning us for significant competitive advantage.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="font-bold text-xl text-center mb-4">Annual Market Growth</h3>
+                    <p class="text-center text-sm text-gray-500 mb-4">The market is expanding by 8-12% annually, creating a fertile ground for new, innovative solutions.</p>
+                    <div class="chart-container"><canvas id="marketGrowthChart"></canvas></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="font-bold text-xl text-center mb-4">Customer Preference for Digital</h3>
+                     <p class="text-center text-sm text-gray-500 mb-4">A vast majority of customers are eager to move away from traditional, paper-based processes and embrace digital solutions.</p>
+                    <div class="chart-container"><canvas id="digitalPreferenceChart"></canvas></div>
                 </div>
             </div>
-        </div>
+        </section>
+        
+        <section class="my-24 section-bg-light">
+            <h2 class="text-3xl font-bold text-center mb-4">How It Works: The AI-Powered Data Flow</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">Our system automates the entire underwriting process, from initial contact to final quote, through a seamless flow between our secure, on-chain canisters on the Internet Computer Protocol.</p>
+            <div class="flex flex-col items-center space-y-6">
+                <div class="flow-step p-5 rounded-lg shadow-md w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
+                    <span class="font-bold text-[#073B4C]">1. User Input:</span> User interacts with the conversational AI chatbot.
+                </div>
+                <div class="flow-arrow">⬇</div>
+                <div class="flow-step p-5 rounded-lg shadow-md w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
+                    <span class="font-bold text-[#073B4C]">2. NLP & Validation:</span> AI canister processes natural language; Backend canister validates data.
+                </div>
+                <div class="flow-arrow">⬇</div>
+                <div class="flow-step p-5 rounded-lg shadow-md w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
+                    <span class="font-bold text-[#073B4C]">3. Risk Assessment:</span> Machine Learning models in the AI canister perform real-time risk scoring.
+                </div>
+                <div class="flow-arrow">⬇</div>
+                 <div class="flow-step p-5 rounded-lg shadow-md w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
+                    <span class="font-bold text-[#073B4C]">4. Quote Generation:</span> Backend canister's rating engine calculates a personalized price.
+                </div>
+                <div class="flow-arrow">⬇</div>
+                <div class="flow-step bg-[#06D6A0] text-white border-[#06D6A0] p-5 rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
+                    <span class="font-bold">5. Policy Quote Displayed:</span> The final, tailored quote is presented to the user instantly.
+                </div>
+            </div>
+        </section>
+
+        <section class="my-24">
+            <h2 class="text-3xl font-bold text-center mb-4">Project Roadmap: 20 Weeks to Launch</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">Our agile, phased approach ensures rapid development, continuous improvement, and production readiness in under five months, with clear deliverables at each stage.</p>
+            <div class="relative pl-8 border-l-2 border-dashed border-[#118AB2]">
+                <div class="timeline-item mb-12">
+                    <h4 class="text-xl font-bold text-[#FF6B6B] mb-2">Phase 1: Foundation (Weeks 1-4)</h4>
+                    <p class="text-gray-600">Establish the ICP development environment, basic canister architecture, core data models, and integrate Internet Identity for secure authentication.</p>
+                </div>
+                <div class="timeline-item mb-12">
+                    <h4 class="text-xl font-bold text-[#FFD166] mb-2">Phase 2: Core Features (Weeks 5-10)</h4>
+                    <p class="text-gray-600">Develop the functional chatbot interface, implement a basic ML risk model, build the quote generation engine, and create the primary React frontend.</p>
+                </div>
+                <div class="timeline-item mb-12">
+                     <h4 class="text-xl font-bold text-[#06D6A0] mb-2">Phase 3: AI Enhancement (Weeks 11-16)</h4>
+                    <p class="text-gray-600">Train advanced, high-accuracy ML models, refine natural language understanding, and optimize model inference for real-time performance within the WASM environment.</p>
+                </div>
+                <div class="timeline-item">
+                     <h4 class="text-xl font-bold text-[#118AB2] mb-2">Phase 4: Production Readiness (Weeks 17-20)</h4>
+                    <p class="text-gray-600">Deploy to ICP mainnet, conduct thorough security audits and user acceptance testing, and finalize comprehensive documentation for a successful public launch.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="my-24 section-bg-light">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="font-bold text-xl text-center mb-4">Total Estimated Investment</h3>
+                    <p class="text-center text-sm text-gray-600 mb-4">A clear breakdown of the $272,000 required to bring InsuAi to market and support its first year of operations, ensuring transparency.</p>
+                    <div class="chart-container"><canvas id="budgetChart"></canvas></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-center">
+                    <h3 class="font-bold text-xl text-center mb-4">Built on a Future-Proof Stack</h3>
+                     <p class="text-center text-gray-600 mb-6">We leverage robust, cutting-edge technologies to ensure unparalleled performance, security, and scalability for InsuAi.</p>
+                     <div class="space-y-4 text-center">
+                        <div class="font-semibold text-lg text-[#073B4C]">🌐 Internet Computer (ICP)</div>
+                        <div class="font-semibold text-lg text-[#073B4C]">🦀 Rust & Motoko</div>
+                        <div class="font-semibold text-lg text-[#073B4C]">⚛️ React & Tailwind CSS</div>
+                        <div class="font-semibold text-lg text-[#073B4C]">🧠 Candle (On-Chain AI/ML)</div>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center my-12 pt-8 border-t border-gray-200">
+            <p class="text-gray-500 text-lg font-medium">InsuAi | Revolutionizing Insurance, One Conversation at a Time.</p>
+            <p class="text-sm text-gray-400 mt-2">Document Version: 1.0 | June 28, 2025</p>
+        </footer>
+
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageInput = document.getElementById('messageInput');
-            const sendBtn = document.getElementById('sendBtn');
-            const riskModal = document.getElementById('riskModal');
-            const closeModal = document.getElementById('closeModal');
-            const loginBtn = document.getElementById('loginBtn');
-            const progressBar = document.getElementById('progressBar');
-            
-            // Sample conversation flow
-            const conversationFlow = [
-                {
-                    question: "What is your full legal name?",
-                    quickReplies: ["John Doe", "Jane Smith", "How is this information used?"],
-                    progress: 20
-                },
-                {
-                    question: "What is your date of birth? (MM/DD/YYYY)",
-                    quickReplies: ["01/15/1985", "05/22/1990", "Why do you need my age?"],
-                    progress: 35
-                },
-                {
-                    question: "What is the make and model of your vehicle?",
-                    quickReplies: ["Toyota Camry 2018", "Honda CR-V 2020", "Ford F-150 2019"],
-                    progress: 50
-                },
-                {
-                    question: "How many years of driving experience do you have?",
-                    quickReplies: ["5 years", "10 years", "15+ years"],
-                    progress: 65
-                },
-                {
-                    question: "Have you had any accidents or claims in the last 5 years?",
-                    quickReplies: ["No", "Yes, 1 accident", "Yes, multiple"],
-                    progress: 80
-                },
-                {
-                    question: "Finally, what is your estimated annual mileage?",
-                    quickReplies: ["Under 10,000", "10,000-15,000", "Over 15,000"],
-                    progress: 95
-                }
-            ];
-            
-            let currentStep = 0;
-            
-            // Function to add a message to the chat
-            function addMessage(text, isUser = false) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `flex items-start space-x-3 fade-in ${isUser ? 'justify-end' : ''}`;
-                
-                if (!isUser) {
-                    messageDiv.innerHTML = `
-                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-800 flex items-center justify-center border border-cyan-600">
-                            <i class="fas fa-robot text-cyan-400"></i>
-                        </div>
-                        <div class="bg-gray-700 rounded-xl p-4 max-w-[85%] border border-gray-600">
-                            <p class="text-gray-200">${text}</p>
-                            ${currentStep < conversationFlow.length ? `
-                            <div class="mt-3 flex flex-wrap gap-2">
-                                ${conversationFlow[currentStep].quickReplies.map(reply => 
-                                    `<button class="quick-reply-btn bg-gray-900 text-cyan-400 border border-cyan-600 px-3 py-1 rounded-full text-sm hover:bg-cyan-700 transition">
-                                        ${reply}
-                                    </button>`
-                                ).join('')}
-                            </div>` : ''}
-                        </div>
-                    `;
+        const FONT_COLOR = '#073B4C';
+        const PALETTE = {
+            red: '#FF6B6B',
+            yellow: '#FFD166',
+            green: '#06D6A0',
+            blue: '#118AB2',
+            darkBlue: '#073B4C',
+            lightGray: '#F8F9FA',
+            mediumGray: '#E9ECEF'
+        };
+
+        const wrapLabel = (label, maxLength = 16) => {
+            if (label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
                 } else {
-                    messageDiv.innerHTML = `
-                        <div class="bg-blue-600 text-white rounded-xl p-4 max-w-[85%] border border-blue-500">
-                            <p>${text}</p>
-                        </div>
-                    `;
-                }
-                
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                
-                if (!isUser && currentStep < conversationFlow.length) {
-                    progressBar.style.width = `${conversationFlow[currentStep].progress}%`;
-                    
-                    // Re-attach event listeners to new quick reply buttons
-                    setTimeout(() => {
-                        document.querySelectorAll('.quick-reply-btn').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const replyText = this.textContent.trim();
-                                addMessage(replyText, true);
-                                
-                                // Move to next question if not a "help" question
-                                if (!replyText.startsWith("How") && !replyText.startsWith("Why")) {
-                                    currentStep++;
-                                    if (currentStep < conversationFlow.length) {
-                                        setTimeout(() => {
-                                            addMessage(conversationFlow[currentStep].question, false);
-                                        }, 1000);
-                                    } else {
-                                        // Show final assessment
-                                        setTimeout(() => {
-                                            addMessage("Thank you! I'm now analyzing your information to generate your personalized quote...", false);
-                                            
-                                            setTimeout(() => {
-                                                addMessage("Analysis complete! Here's your risk assessment and quote:", false);
-                                                riskModal.classList.remove('hidden');
-                                                
-                                                // Animate risk bar
-                                                setTimeout(() => {
-                                                    document.querySelector('.risk-bar').style.width = '72%';
-                                                }, 300);
-                                            }, 2000);
-                                        }, 1000);
-                                    }
-                                }
-                            });
-                        });
-                    }, 100);
+                    currentLine = (currentLine + ' ' + word).trim();
                 }
             }
-            
-            // Send button click handler
-            sendBtn.addEventListener('click', function() {
-                const message = messageInput.value.trim();
-                if (message) {
-                    addMessage(message, true);
-                    messageInput.value = '';
-                    
-                    // Simulate AI response
-                    setTimeout(() => {
-                        if (currentStep < conversationFlow.length) {
-                            addMessage(conversationFlow[currentStep].question, false);
-                        }
-                    }, 800);
-                }
-            });
-            
-            // Initial quick reply button click handler (for the very first set of buttons)
-            document.querySelectorAll('.quick-reply-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const replyText = this.textContent.trim();
-                    addMessage(replyText, true);
-                    
-                    if (!replyText.startsWith("How") && !replyText.startsWith("Why")) {
-                        currentStep++;
-                        if (currentStep < conversationFlow.length) {
-                            setTimeout(() => {
-                                addMessage(conversationFlow[currentStep].question, false);
-                            }, 1000);
-                        } else {
-                            setTimeout(() => {
-                                addMessage("Thank you! I'm now analyzing your information to generate your personalized quote...", false);
-                                setTimeout(() => {
-                                    addMessage("Analysis complete! Here's your risk assessment and quote:", false);
-                                    riskModal.classList.remove('hidden');
-                                    setTimeout(() => {
-                                        document.querySelector('.risk-bar').style.width = '72%';
-                                    }, 300);
-                                }, 2000);
-                            }, 1000);
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const COMMON_CHART_OPTIONS = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: FONT_COLOR,
+                        font: {
+                            family: "'Inter', sans-serif",
+                            size: 14
                         }
                     }
-                });
-            });
-            
-            // Modal close button
-            closeModal.addEventListener('click', function() {
-                riskModal.classList.add('hidden');
-            });
-            
-            // Login button
-            loginBtn.addEventListener('click', function() {
-                // Replaced alert with a custom message box for better UX
-                const messageBox = document.createElement('div');
-                messageBox.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-[9999]';
-                messageBox.innerHTML = `
-                    <div class="bg-gray-900 rounded-xl shadow-xl max-w-sm w-full p-6 border border-cyan-700 glow-shadow text-center">
-                        <h3 class="text-xl font-bold text-cyan-400 mb-4">Authentication</h3>
-                        <p class="text-gray-200 mb-6">Internet Identity authentication would appear here in a production environment.</p>
-                        <button class="bg-cyan-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-cyan-700 transition transform btn-glow" onclick="this.closest('.fixed').remove()">
-                            Close
-                        </button>
-                    </div>
-                `;
-                document.body.appendChild(messageBox);
-            });
-            
-            // Allow pressing Enter to send message
-            messageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendBtn.click();
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    bodyFont: {
+                        family: "'Inter', sans-serif"
+                    },
+                    titleFont: {
+                        family: "'Inter', sans-serif",
+                        weight: 'bold'
+                    },
+                    backgroundColor: 'rgba(7, 59, 76, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: PALETTE.blue,
+                    borderWidth: 1,
+                    cornerRadius: 4
                 }
-            });
+            },
+            color: FONT_COLOR,
+            font: {
+                family: "'Inter', sans-serif"
+            }
+        };
+
+        new Chart(document.getElementById('accuracyChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Target Accuracy', 'Remainder'],
+                datasets: [{
+                    data: [95, 5],
+                    backgroundColor: [PALETTE.green, PALETTE.mediumGray],
+                    borderColor: '#ffffff',
+                    borderWidth: 4,
+                }]
+            },
+            options: { ...COMMON_CHART_OPTIONS, cutout: '70%',
+                plugins: {
+                    ...COMMON_CHART_OPTIONS.plugins,
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('satisfactionChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['User Satisfaction', 'Remainder'],
+                datasets: [{
+                    data: [90, 10],
+                    backgroundColor: [PALETTE.blue, PALETTE.mediumGray],
+                    borderColor: '#ffffff',
+                    borderWidth: 4,
+                }]
+            },
+            options: { ...COMMON_CHART_OPTIONS, cutout: '70%',
+                 plugins: {
+                    ...COMMON_CHART_OPTIONS.plugins,
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+        
+        new Chart(document.getElementById('costReductionChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Cost Reduction'],
+                datasets: [{
+                    label: 'Reduction Target (%)',
+                    data: [70],
+                    backgroundColor: [PALETTE.yellow],
+                    borderColor: [PALETTE.darkBlue],
+                    borderWidth: 1,
+                    barPercentage: 0.5,
+                }]
+            },
+            options: { ...COMMON_CHART_OPTIONS, 
+                indexAxis: 'y',
+                scales: {
+                    x: { 
+                        beginAtZero: true, 
+                        max: 100, 
+                        grid: { display: false },
+                        ticks: { color: FONT_COLOR, font: { family: "'Inter', sans-serif" } }
+                    },
+                    y: { grid: { display: false }, ticks: { color: FONT_COLOR, font: { family: "'Inter', sans-serif" } } }
+                },
+                plugins: { ...COMMON_CHART_OPTIONS.plugins, legend: { display: false } }
+            }
+        });
+
+        new Chart(document.getElementById('marketGrowthChart'), {
+            type: 'line',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5 (Proj.)'],
+                datasets: [{
+                    label: 'Market Growth (%)',
+                    data: [8, 9, 10.5, 11, 12],
+                    fill: true,
+                    borderColor: PALETTE.blue,
+                    backgroundColor: 'rgba(17, 138, 178, 0.15)',
+                    tension: 0.4,
+                    pointBackgroundColor: PALETTE.blue,
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                }]
+            },
+            options: { ...COMMON_CHART_OPTIONS,
+                scales: {
+                    y: { beginAtZero: false, ticks: { color: FONT_COLOR, font: { family: "'Inter', sans-serif" } } },
+                    x: { ticks: { color: FONT_COLOR, font: { family: "'Inter', sans-serif" } } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('digitalPreferenceChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Prefer Digital-First', 'Prefer Traditional'],
+                datasets: [{
+                    data: [70, 30],
+                    backgroundColor: [PALETTE.green, PALETTE.red],
+                    borderColor: '#ffffff',
+                    borderWidth: 4,
+                }]
+            },
+            options: { ...COMMON_CHART_OPTIONS, cutout: '60%' }
+        });
+
+        new Chart(document.getElementById('budgetChart'), {
+            type: 'pie',
+            data: {
+                labels: [wrapLabel('Development Costs ($195k)'), wrapLabel('Annual Operational Costs ($77k)')],
+                datasets: [{
+                    data: [195000, 77000],
+                    backgroundColor: [PALETTE.blue, PALETTE.yellow],
+                    borderColor: '#ffffff',
+                    borderWidth: 4,
+                }]
+            },
+            options: { ...COMMON_CHART_OPTIONS,
+                plugins: {
+                    ...COMMON_CHART_OPTIONS.plugins,
+                    legend: { position: 'bottom' }
+                }
+            }
         });
     </script>
 </body>
