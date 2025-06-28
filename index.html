@@ -3,464 +3,728 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InsuAi: AI-Powered Insurance Underwriting Infographic</title>
+    <title>AI-Powered Insurance Underwriting System</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Space Mono for a techy look -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for potential future dynamic graphs (not used directly in this static example) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
+        /* Base font for the entire body - Techy look */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F8F9FA;
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
-        .chart-container {
+
+        /* Slide animations */
+        .slide {
+            display: none;
+            animation: fadeIn 0.7s ease-in-out forwards; /* 'forwards' keeps the end state */
+            transform-origin: center center;
+        }
+        .slide.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Chat bubble styling */
+        .chat-bubble {
             position: relative;
-            width: 100%;
-            max-width: 600px;
+            background: #007bff; /* Vibrant Blue */
+            color: white;
+            border-radius: 1.25rem; /* More rounded */
+            padding: 0.85rem 1.25rem; /* Slightly more padding */
+            margin: 0.6rem 0; /* Slightly more margin */
+            max-width: 80%;
+            line-height: 1.5; /* Better readability */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .chat-bubble.user {
+            background: #333; /* Darker gray for user bubble */
+            color: #00ff00; /* Neon green text for user bubble */
             margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+            border-bottom-right-radius: 0.25rem; /* Small tail for user */
+            box-shadow: 0 2px 5px rgba(0,255,0,0.2); /* Green glow */
         }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
+        .chat-bubble.ai {
+            background: #007bff; /* Vibrant Blue */
+            color: #e0f7fa; /* Light cyan text for AI bubble */
+            border-bottom-left-radius: 0.25rem; /* Small tail for AI */
+            box-shadow: 0 2px 5px rgba(0,123,255,0.2); /* Blue glow */
         }
-        .gradient-text {
-            background: linear-gradient(to right, #118AB2, #06D6A0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        /* Progress bar styling */
+        .progress-bar {
+            height: 8px; /* Thicker progress bar */
+            background-color: #222; /* Darker background for progress bar */
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
         }
-        .header-bg {
-            background: linear-gradient(to bottom right, #e0f2f7, #c8e6c9);
-            padding: 3rem 0;
-            border-radius: 0 0 2rem 2rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        .progress-fill {
+            height: 100%;
+            background-color: #00ff00; /* Neon green */
+            transition: width 0.5s ease-out; /* Smoother transition */
+            box-shadow: 0 0 8px #00ff00; /* Glowing effect */
         }
-        .kpi-card {
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+        /* Feature card hover effect */
+        .feature-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            background: #1a1a1a; /* Darker background for cards */
+            border: 1px solid #333; /* Subtle border */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        .kpi-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,255,255,0.2), 0 0 15px rgba(0,255,255,0.2); /* Cyan glow on hover */
         }
-        .flow-step {
-            border: 2px solid #118AB2;
-            background-color: #ffffff;
-            color: #073B4C;
-            transition: all 0.3s ease-in-out;
+
+        /* Custom styles for infographic elements */
+        .infographic-item {
+            @apply flex flex-col items-center p-4 rounded-xl bg-gray-900 shadow-sm border border-gray-800 transition-all duration-300 ease-in-out;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
         }
-        .flow-step:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 15px rgba(17, 138, 178, 0.2);
+        .infographic-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,255,255,0.3), 0 0 10px rgba(0,255,255,0.1);
         }
-        .flow-arrow {
-            color: #118AB2;
-            font-size: 2.5rem;
-            line-height: 1;
-            margin: 0.5rem 0;
-            animation: bounceArrow 1.5s infinite;
+        .infographic-icon {
+            @apply text-4xl mb-3;
+            text-shadow: 0 0 8px currentColor; /* Subtle glow */
         }
-        @keyframes bounceArrow {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(10px); }
+        /* Removed infographic-value and infographic-label default colors to allow inline overrides */
+
+
+        /* Simple bar chart styling (adjusted for dark theme) */
+        .bar-chart-container {
+            @apply flex flex-col items-center justify-center p-6 bg-gray-900 rounded-2xl shadow-lg border border-gray-800;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .bar-chart {
+            @apply flex items-end h-48 w-full max-w-md mt-4;
+        }
+        .bar {
+            @apply flex-1 bg-teal-500 mx-1 rounded-t-lg transition-all duration-500 ease-out;
+            box-shadow: 0 0 10px #00ffcc; /* Teal glow */
+        }
+        .bar-label {
+            @apply text-xs text-gray-400 mt-1;
+        }
+        .bar-value {
+            @apply text-xs text-white font-semibold flex items-center justify-center -mt-6;
+        }
+
+        /* Timeline styling */
+        .timeline {
+            @apply relative pl-8 border-l-4 border-teal-500 space-y-8; /* Neon teal border */
         }
         .timeline-item {
-            position: relative;
-            padding-left: 2.5rem;
+            @apply relative;
         }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -15px; /* Adjust to align with the border-l-2 */
-            top: 1.5rem;
-            transform: translateY(-50%);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: #FF6B6B; /* Default color, overridden by specific phases */
-            border: 4px solid #F8F9FA;
-            box-shadow: 0 0 0 2px #118AB2;
-            transition: all 0.3s ease-in-out;
+        .timeline-dot {
+            @apply absolute -left-4 top-0 w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center text-white font-bold shadow-md;
+            box-shadow: 0 0 10px #00ffcc; /* Teal glow */
         }
-        .timeline-item:hover::before {
-            transform: translateY(-50%) scale(1.2);
-            box-shadow: 0 0 0 6px #118AB2;
+        .timeline-content {
+            @apply ml-4 p-4 bg-gray-900 rounded-lg shadow-sm border border-gray-800; /* Darker background for content */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
-        .timeline-item:nth-child(1)::before { background-color: #FF6B6B; }
-        .timeline-item:nth-child(2)::before { background-color: #FFD166; }
-        .timeline-item:nth-child(3)::before { background-color: #06D6A0; }
-        .timeline-item:nth-child(4)::before { background-color: #118AB2; }
-
-        .section-bg-light {
-            background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            padding: 3rem;
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #222;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #00ffff;
+            border-radius: 10px;
+            border: 2px solid #222;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #00ccff;
         }
     </style>
 </head>
-<body class="text-[#073B4C]">
-
-    <div class="header-bg text-center">
-        <h1 class="text-5xl md:text-7xl font-black gradient-text leading-tight">InsuAi</h1>
-        <p class="mt-4 text-xl md:text-3xl font-light text-gray-700">Revolutionizing Insurance Underwriting with AI</p>
-    </div>
-
-    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
-
-        <section class="my-24">
-            <h2 class="text-3xl font-bold text-center mb-4">The Problem with Traditional Underwriting</h2>
-            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">The current manual process is slow, expensive, and frustrating for customers. It's a system ripe for disruption, leading to missed opportunities and inconsistent service.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="kpi-card p-6">
-                    <div class="text-5xl font-extrabold text-[#FF6B6B]">2-5 Days</div>
-                    <div class="mt-2 text-lg font-semibold">Processing Time ⏳</div>
-                    <p class="text-sm text-gray-500 mt-1">Customers face lengthy waits for quotes, leading to high abandonment rates and frustration.</p>
+<body class="bg-black min-h-screen flex items-center justify-center py-10 px-4">
+    <div class="container mx-auto w-full max-w-4xl">
+        <!-- Slide 1: Executive Summary -->
+        <div class="slide active bg-gray-950 rounded-3xl shadow-xl overflow-hidden border border-gray-800">
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-900 p-8 text-white text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight text-shadow-blue">AI-Powered Insurance Underwriting System</h1>
+                <p class="text-blue-300 text-lg mt-3 opacity-90">Revolutionizing motor vehicle insurance assessment with intelligent automation</p>
+            </div>
+            <div class="p-8">
+                <div class="flex items-center mb-8 bg-gray-900 p-5 rounded-2xl border border-gray-800">
+                    <div class="bg-blue-900 p-4 rounded-full mr-5 shadow-md">
+                        <i class="fas fa-lightbulb text-blue-400 text-3xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-semibold text-white">Vision Statement</h2>
+                        <p class="text-gray-300 mt-1 text-lg">Create the most efficient, accurate, and user-friendly insurance underwriting platform that eliminates manual bottlenecks.</p>
+                    </div>
                 </div>
-                <div class="kpi-card p-6">
-                    <div class="text-5xl font-extrabold text-[#FFD166]">60-80%</div>
-                    <div class="mt-2 text-lg font-semibold">Higher Costs 💸</div>
-                    <p class="text-sm text-gray-500 mt-1">Manual data entry and assessment significantly inflate operational overheads for insurers.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="feature-card p-6 rounded-2xl">
+                        <h3 class="font-bold text-cyan-400 text-xl mb-3 flex items-center">
+                            <i class="fas fa-hand-holding-usd text-teal-500 mr-3"></i> Key Benefits
+                        </h3>
+                        <ul class="text-base space-y-3 text-gray-200">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3 flex-shrink-0"></i>
+                                <span>Reduce processing time from 2-5 days to <strong class="text-green-400">under 5 minutes</strong></span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3 flex-shrink-0"></i>
+                                <span>Achieve <strong class="text-green-400">>95%</strong> risk assessment accuracy</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3 flex-shrink-0"></i>
+                                <span><strong class="text-green-400">60-80% reduction</strong> in manual underwriting costs</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="feature-card p-6 rounded-2xl">
+                        <h3 class="font-bold text-cyan-400 text-xl mb-3 flex items-center">
+                            <i class="fas fa-microchip text-teal-500 mr-3"></i> Technology Stack
+                        </h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-gray-800 px-4 py-2 rounded-full text-sm font-medium text-blue-300 border border-blue-900 shadow-sm">ICP Blockchain</span>
+                            <span class="bg-gray-800 px-4 py-2 rounded-full text-sm font-medium text-blue-300 border border-blue-900 shadow-sm">Rust/React</span>
+                            <span class="bg-gray-800 px-4 py-2 rounded-full text-sm font-medium text-blue-300 border border-blue-900 shadow-sm">AI/ML</span>
+                            <span class="bg-gray-800 px-4 py-2 rounded-full text-sm font-medium text-blue-300 border border-blue-900 shadow-sm">Chatbot</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="kpi-card p-6">
-                     <div class="text-5xl font-extrabold text-[#118AB2]">High</div>
-                    <div class="mt-2 text-lg font-semibold">Error & Inconsistency ❌</div>
-                    <p class="text-sm text-gray-500 mt-1">Human judgment introduces variability, resulting in inconsistent risk assessments and costly errors.</p>
+
+                <!-- Market Opportunity Infographic -->
+                <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800">
+                    <h3 class="font-bold text-white text-xl mb-4 text-center">Market Opportunity Snapshot</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="infographic-item">
+                            <i class="fas fa-chart-line text-green-400 infographic-icon"></i>
+                            <div class="text-3xl font-bold text-green-400 text-shadow-green">8-12%</div>
+                            <div class="text-sm text-green-300 text-center">Annual Market Growth</div>
+                        </div>
+                        <div class="infographic-item">
+                            <i class="fas fa-mobile-alt text-purple-400 infographic-icon"></i>
+                            <div class="text-3xl font-bold text-purple-400 text-shadow-purple">70%</div>
+                            <div class="text-sm text-purple-300 text-center">Prefer Digital-First</div>
+                        </div>
+                        <div class="infographic-item">
+                            <i class="fas fa-dollar-sign text-orange-400 infographic-icon"></i>
+                            <div class="text-3xl font-bold text-orange-400 text-shadow-orange">$272K</div>
+                            <div class="text-sm text-orange-300 text-center">Total Investment</div>
+                        </div>
+                    </div>
+                    <!-- Placeholder for a real chart if needed -->
+                    <!-- <canvas id="marketGrowthChart" class="mt-4"></canvas> -->
+                    <!-- <script>
+                        // Example Chart.js code (uncomment and provide data to use)
+                        // const ctx = document.getElementById('marketGrowthChart').getContext('2d');
+                        // new Chart(ctx, {
+                        //     type: 'bar',
+                        //     data: {
+                        //         labels: ['2023', '2024', '2025'],
+                        //         datasets: [{
+                        //             label: 'Market Growth (%)',
+                        //             data: [8, 10, 12],
+                        //             backgroundColor: ['#007bff', '#0056b3', '#003d80'],
+                        //         }]
+                        //     },
+                        //     options: { responsive: true, maintainAspectRatio: false }
+                        // });
+                    </script> -->
                 </div>
             </div>
-        </section>
+            <div class="bg-gray-900 px-8 py-4 border-t border-gray-800 flex justify-between items-center">
+                <div class="text-base text-gray-400">Slide 1 of 5</div>
+                <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center font-semibold shadow-md transition-all duration-200 ease-in-out hover:scale-105">
+                    Next <i class="fas fa-arrow-right ml-3"></i>
+                </button>
+            </div>
+        </div>
 
-        <section class="my-24 section-bg-light">
-            <h2 class="text-3xl font-bold text-center mb-4">The InsuAi Revolution: From Days to Minutes</h2>
-            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">InsuAi leverages a conversational AI chatbot and real-time machine learning models to deliver instant, accurate, and personalized insurance quotes. Our key success metrics define a new standard for the industry, ensuring efficiency and customer satisfaction.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="kpi-card">
-                    <h3 class="font-bold text-lg mb-2">Processing Time</h3>
-                    <p class="text-6xl font-black text-[#06D6A0]">&lt;5</p>
-                    <p class="font-semibold">Minutes ⚡</p>
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide bg-gray-950 rounded-3xl shadow-xl overflow-hidden border border-gray-800">
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-900 p-8 text-white text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight text-shadow-blue">Current Challenges in Insurance Underwriting</h1>
+                <p class="text-blue-300 text-lg mt-3 opacity-90">Identifying the pain points we're solving with AI</p>
+            </div>
+            <div class="p-8">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-5">Traditional Underwriting Limitations</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="feature-card p-6 rounded-2xl bg-red-950 bg-opacity-30 border border-red-900">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-red-900 p-3 rounded-full mr-4 shadow-sm">
+                                    <i class="fas fa-clock text-red-500 text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-red-400 text-xl">Time-Intensive</h3>
+                            </div>
+                            <p class="text-base text-gray-200">Takes 2-5 business days, leading to significant customer frustration and lost opportunities.</p>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl bg-red-950 bg-opacity-30 border border-red-900">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-red-900 p-3 rounded-full mr-4 shadow-sm">
+                                    <i class="fas fa-random text-red-500 text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-red-400 text-xl">Inconsistent Decisions</h3>
+                            </div>
+                            <p class="text-base text-gray-200">Human judgment introduces variability, leading to inconsistent and subjective risk assessments.</p>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl bg-red-950 bg-opacity-30 border border-red-900">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-red-900 p-3 rounded-full mr-4 shadow-sm">
+                                    <i class="fas fa-dollar-sign text-red-500 text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-red-400 text-xl">High Operational Costs</h3>
+                            </div>
+                            <p class="text-base text-gray-200">Significant human resources and manual processes result in elevated operational expenditures.</p>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl bg-red-950 bg-opacity-30 border border-red-900">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-red-900 p-3 rounded-full mr-4 shadow-sm">
+                                    <i class="fas fa-user-times text-red-500 text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-red-400 text-xl">Poor User Experience</h3>
+                            </div>
+                            <p class="text-base text-gray-200">Static, lengthy forms and slow processes create friction and dissatisfaction for applicants.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="kpi-card">
-                    <h3 class="font-bold text-lg mb-4">Risk Assessment Accuracy</h3>
-                    <div class="chart-container h-48 max-h-48"><canvas id="accuracyChart"></canvas></div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="font-bold text-lg mb-4">User Satisfaction</h3>
-                    <div class="chart-container h-48 max-h-48"><canvas id="satisfactionChart"></canvas></div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="font-bold text-lg mb-4">Manual Cost Reduction</h3>
-                    <div class="chart-container h-48 max-h-48"><canvas id="costReductionChart"></canvas></div>
+
+                <!-- AI Solution Overview Infographic -->
+                <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800 mb-8">
+                    <h3 class="font-bold text-cyan-400 text-xl mb-4 text-center">Our AI Solution Addresses These Pain Points</h3>
+                    <div class="flex flex-wrap justify-center gap-4 py-2">
+                        <div class="infographic-item bg-gray-800 border-gray-700">
+                            <div class="bg-transparent w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                                <i class="fas fa-robot text-blue-400 text-2xl infographic-icon"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-gray-200">Conversational AI</div>
+                        </div>
+                        <div class="infographic-item bg-gray-800 border-gray-700">
+                            <div class="bg-transparent w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                                <i class="fas fa-bolt text-blue-400 text-2xl infographic-icon"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-gray-200">Real-Time Processing</div>
+                        </div>
+                        <div class="infographic-item bg-gray-800 border-gray-700">
+                            <div class="bg-transparent w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                                <i class="fas fa-chart-line text-blue-400 text-2xl infographic-icon"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-gray-200">ML Risk Assessment</div>
+                        </div>
+                        <div class="infographic-item bg-gray-800 border-gray-700">
+                            <div class="bg-transparent w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                                <i class="fas fa-lock text-blue-400 text-2xl infographic-icon"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-gray-200">ICP Security</div>
+                        </div>
+                        <div class="infographic-item bg-gray-800 border-gray-700">
+                            <div class="bg-transparent w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                                <i class="fas fa-money-bill-wave text-blue-400 text-2xl infographic-icon"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-gray-200">Cost Reduction</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
+            <div class="bg-gray-900 px-8 py-4 border-t border-gray-800 flex justify-between items-center">
+                <button onclick="prevSlide()" class="text-blue-400 hover:text-blue-300 px-6 py-3 rounded-xl flex items-center font-semibold transition-all duration-200 ease-in-out hover:scale-105">
+                    <i class="fas fa-arrow-left mr-3"></i> Previous
+                </button>
+                <div class="text-base text-gray-400">Slide 2 of 5</div>
+                <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center font-semibold shadow-md transition-all duration-200 ease-in-out hover:scale-105">
+                    Next <i class="fas fa-arrow-right ml-3"></i>
+                </button>
+            </div>
+        </div>
 
-        <section class="my-24">
-             <h2 class="text-3xl font-bold text-center mb-4">A Market Ready for Innovation</h2>
-            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">The Sub-Saharan African insurance market is not only growing rapidly but also showing a strong preference for the digital-first experiences that InsuAi provides, positioning us for significant competitive advantage.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="font-bold text-xl text-center mb-4">Annual Market Growth</h3>
-                    <p class="text-center text-sm text-gray-500 mb-4">The market is expanding by 8-12% annually, creating a fertile ground for new, innovative solutions.</p>
-                    <div class="chart-container"><canvas id="marketGrowthChart"></canvas></div>
+        <!-- Slide 3: Solution Overview -->
+        <div class="slide bg-gray-950 rounded-3xl shadow-xl overflow-hidden border border-gray-800">
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-900 p-8 text-white text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight text-shadow-blue">Our AI-Powered Solution</h1>
+                <p class="text-blue-300 text-lg mt-3 opacity-90">How we're transforming insurance underwriting with cutting-edge technology</p>
+            </div>
+            <div class="p-8">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-5">Core Innovation Components</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="feature-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-blue-900 p-3 rounded-full mr-4 shadow-sm">
+                                    <i class="fas fa-comments text-blue-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-cyan-400 text-xl">Conversational Data Collection</h3>
+                            </div>
+                            <p class="text-base text-gray-200">Our intuitive natural language chatbot replaces cumbersome traditional forms, making data collection seamless.</p>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-blue-900 p-3 rounded-full mr-4 shadow-sm">
+                                    <i class="fas fa-brain text-blue-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-cyan-400 text-xl">Real-Time Risk Assessment</h3>
+                            </div>
+                            <p class="text-base text-gray-200">Advanced Machine Learning models process input data instantly, providing immediate and accurate risk scores.</p>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-blue-900 p-3 rounded-full mr-4 shadow-sm">
+                                    <i class="fas fa-file-invoice-dollar text-blue-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-cyan-400 text-xl">Dynamic Quote Generation</h3>
+                            </div>
+                            <p class="text-base text-gray-200">Personalized policy pricing is generated on the fly, tailored precisely to the assessed risk profile of each applicant.</p>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-3">
+                                <div class="bg-blue-900 p-3 rounded-full mr-4 shadow-sm">
+                                    <i class="fas fa-graduation-cap text-blue-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-cyan-400 text-xl">Continuous Learning</h3>
+                            </div>
+                            <p class="text-base text-gray-200">The system continuously improves its accuracy and efficiency through robust feedback loops and ongoing model training.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="font-bold text-xl text-center mb-4">Customer Preference for Digital</h3>
-                     <p class="text-center text-sm text-gray-500 mb-4">A vast majority of customers are eager to move away from traditional, paper-based processes and embrace digital solutions.</p>
-                    <div class="chart-container"><canvas id="digitalPreferenceChart"></canvas></div>
+
+                <!-- Chatbot Demo -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-5 text-center">Interactive Chatbot Demo</h2>
+                    <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-inner">
+                        <div class="h-64 overflow-y-auto mb-4 p-2 custom-scrollbar">
+                            <div class="chat-bubble ai">
+                                Hi! I'm your AI insurance assistant. Let's get started with your vehicle details. What's the make and model of your car?
+                            </div>
+                            <div class="chat-bubble user">
+                                I have a 2020 Toyota Camry.
+                            </div>
+                            <div class="chat-bubble ai">
+                                Great choice! And how many miles does it currently have?
+                            </div>
+                            <div class="chat-bubble user">
+                                About 25,000 miles.
+                            </div>
+                            <div class="chat-bubble ai">
+                                Thanks! Based on your details, I can offer you a comprehensive policy for <strong class="text-white">$85/month</strong>. Would you like to proceed or explore other options?
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <input type="text" placeholder="Type your response..." class="flex-grow px-5 py-3 border border-gray-700 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-gray-800 text-gray-100 text-base">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-r-xl shadow-md transition-all duration-200 ease-in-out">
+                                <i class="fas fa-paper-plane text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Architecture Diagram (Static Infographic) -->
+                <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800">
+                    <h3 class="font-bold text-cyan-400 text-xl mb-4 text-center">Technical Architecture Overview</h3>
+                    <div class="flex flex-col items-center justify-center space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <span class="bg-gray-800 px-5 py-2 rounded-full text-sm font-semibold text-blue-300 border border-blue-900 shadow-md">User Interface (React)</span>
+                            <i class="fas fa-arrow-right text-teal-500 text-xl"></i>
+                            <span class="bg-gray-800 px-5 py-2 rounded-full text-sm font-semibold text-blue-300 border border-blue-900 shadow-md">Chatbot / API Gateway</span>
+                        </div>
+                        <i class="fas fa-arrow-down text-teal-500 text-xl"></i>
+                        <div class="flex items-center space-x-4">
+                            <span class="bg-gray-800 px-5 py-2 rounded-full text-sm font-semibold text-blue-300 border border-blue-900 shadow-md">Rust Backend</span>
+                            <i class="fas fa-arrow-right text-teal-500 text-xl"></i>
+                            <span class="bg-gray-800 px-5 py-2 rounded-full text-sm font-semibold text-blue-300 border border-blue-900 shadow-md">ML Engine (Risk Assessment)</span>
+                        </div>
+                        <i class="fas fa-arrow-down text-teal-500 text-xl"></i>
+                        <span class="bg-gray-800 px-5 py-2 rounded-full text-sm font-semibold text-blue-300 border border-blue-900 shadow-md">ICP Blockchain (Data & Logic)</span>
+                    </div>
+                    <p class="text-sm text-gray-300 mt-4 text-center">
+                        Built on Internet Computer Protocol for unparalleled decentralization, security, and cost efficiency.
+                    </p>
                 </div>
             </div>
-        </section>
-        
-        <section class="my-24 section-bg-light">
-            <h2 class="text-3xl font-bold text-center mb-4">How It Works: The AI-Powered Data Flow</h2>
-            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">Our system automates the entire underwriting process, from initial contact to final quote, through a seamless flow between our secure, on-chain canisters on the Internet Computer Protocol.</p>
-            <div class="flex flex-col items-center space-y-6">
-                <div class="flow-step p-5 rounded-lg shadow-md w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
-                    <span class="font-bold text-[#073B4C]">1. User Input:</span> User interacts with the conversational AI chatbot.
+            <div class="bg-gray-900 px-8 py-4 border-t border-gray-800 flex justify-between items-center">
+                <button onclick="prevSlide()" class="text-blue-400 hover:text-blue-300 px-6 py-3 rounded-xl flex items-center font-semibold transition-all duration-200 ease-in-out hover:scale-105">
+                    <i class="fas fa-arrow-left mr-3"></i> Previous
+                </button>
+                <div class="text-base text-gray-400">Slide 3 of 5</div>
+                <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center font-semibold shadow-md transition-all duration-200 ease-in-out hover:scale-105">
+                    Next <i class="fas fa-arrow-right ml-3"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Slide 4: Implementation Plan -->
+        <div class="slide bg-gray-950 rounded-3xl shadow-xl overflow-hidden border border-gray-800">
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-900 p-8 text-white text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight text-shadow-blue">Implementation Roadmap</h1>
+                <p class="text-blue-300 text-lg mt-3 opacity-90">A strategic 20-week plan to achieve production readiness</p>
+            </div>
+            <div class="p-8">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-5">Development Phases</h2>
+                    <div class="timeline">
+                        <!-- Phase 1 -->
+                        <div class="timeline-item">
+                            <div class="timeline-dot">1</div>
+                            <div class="timeline-content">
+                                <h3 class="font-bold text-cyan-400 text-xl mb-2">Foundation (Weeks 1-4)</h3>
+                                <ul class="list-disc pl-6 text-base text-gray-200 space-y-1">
+                                    <li>ICP development environment setup</li>
+                                    <li>Basic canister architecture implementation</li>
+                                    <li>Core data models and interfaces definition</li>
+                                    <li>Secure authentication integration</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Phase 2 -->
+                        <div class="timeline-item">
+                            <div class="timeline-dot">2</div>
+                            <div class="timeline-content">
+                                <h3 class="font-bold text-cyan-400 text-xl mb-2">Core Features (Weeks 5-10)</h3>
+                                <ul class="list-disc pl-6 text-base text-gray-200 space-y-1">
+                                    <li>Functional chatbot interface development</li>
+                                    <li>Initial ML risk assessment model implementation</li>
+                                    <li>Dynamic quote generation engine build-out</li>
+                                    <li>Responsive frontend user interface design</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Phase 3 -->
+                        <div class="timeline-item">
+                            <div class="timeline-dot">3</div>
+                            <div class="timeline-content">
+                                <h3 class="font-bold text-cyan-400 text-xl mb-2">AI Enhancement (Weeks 11-16)</h3>
+                                <ul class="list-disc pl-6 text-base text-gray-200 space-y-1">
+                                    <li>Integration of advanced ML models for high accuracy</li>
+                                    <li>Natural language understanding (NLU) improvements</li>
+                                    <li>Real-time model inference optimization</li>
+                                    <li>Development of comprehensive testing suite</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Phase 4 -->
+                        <div class="timeline-item">
+                            <div class="timeline-dot">4</div>
+                            <div class="timeline-content">
+                                <h3 class="font-bold text-cyan-400 text-xl mb-2">Production Readiness (Weeks 17-20)</h3>
+                                <ul class="list-disc pl-6 text-base text-gray-200 space-y-1">
+                                    <li>Final production-ready deployment on ICP</li>
+                                    <li>Rigorous security audits and compliance checks</li>
+                                    <li>Extensive user acceptance testing (UAT)</li>
+                                    <li>Creation of detailed documentation and training materials</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flow-arrow">⬇</div>
-                <div class="flow-step p-5 rounded-lg shadow-md w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
-                    <span class="font-bold text-[#073B4C]">2. NLP & Validation:</span> AI canister processes natural language; Backend canister validates data.
+
+                <!-- Current Progress Bars -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-5 text-center">Current Progress Status</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-base font-medium text-gray-200">Phase 1: Foundation</span>
+                                <span class="text-base font-bold text-green-400">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-base font-medium text-gray-200">Phase 2: Core Features</span>
+                                <span class="text-base font-bold text-green-400">75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-base font-medium text-gray-200">Phase 3: AI Enhancement</span>
+                                <span class="text-base font-bold text-green-400">30%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flow-arrow">⬇</div>
-                <div class="flow-step p-5 rounded-lg shadow-md w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
-                    <span class="font-bold text-[#073B4C]">3. Risk Assessment:</span> Machine Learning models in the AI canister perform real-time risk scoring.
-                </div>
-                <div class="flow-arrow">⬇</div>
-                 <div class="flow-step p-5 rounded-lg shadow-md w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
-                    <span class="font-bold text-[#073B4C]">4. Quote Generation:</span> Backend canister's rating engine calculates a personalized price.
-                </div>
-                <div class="flow-arrow">⬇</div>
-                <div class="flow-step bg-[#06D6A0] text-white border-[#06D6A0] p-5 rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2 text-center text-lg font-medium">
-                    <span class="font-bold">5. Policy Quote Displayed:</span> The final, tailored quote is presented to the user instantly.
+
+                <!-- Target Launch Timeline Infographic -->
+                <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800">
+                    <h3 class="font-bold text-cyan-400 text-xl mb-4 text-center">Target Launch Timeline</h3>
+                    <div class="flex flex-col sm:flex-row items-center justify-around text-center space-y-6 sm:space-y-0 sm:space-x-4">
+                        <div class="infographic-item bg-gray-800 border-gray-700">
+                            <i class="fas fa-rocket text-teal-500 infographic-icon"></i>
+                            <div class="text-xl font-bold text-cyan-400">July 2025</div>
+                            <div class="text-sm text-gray-300">Beta Launch</div>
+                        </div>
+                        <i class="fas fa-arrow-right text-teal-500 text-3xl hidden sm:block"></i>
+                        <i class="fas fa-arrow-down text-teal-500 text-3xl block sm:hidden"></i>
+                        <div class="infographic-item bg-gray-800 border-gray-700">
+                            <i class="fas fa-globe text-teal-500 infographic-icon"></i>
+                            <div class="text-xl font-bold text-cyan-400">Aug 2025</div>
+                            <div class="text-sm text-gray-300">Public Launch</div>
+                        </div>
+                        <i class="fas fa-arrow-right text-teal-500 text-3xl hidden sm:block"></i>
+                        <i class="fas fa-arrow-down text-teal-500 text-3xl block sm:hidden"></i>
+                        <div class="infographic-item bg-gray-800 border-gray-700">
+                            <i class="fas fa-chart-area text-teal-500 infographic-icon"></i>
+                            <div class="text-xl font-bold text-cyan-400">Sep 2025</div>
+                            <div class="text-sm text-gray-300">Market Expansion</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
+            <div class="bg-gray-900 px-8 py-4 border-t border-gray-800 flex justify-between items-center">
+                <button onclick="prevSlide()" class="text-blue-400 hover:text-blue-300 px-6 py-3 rounded-xl flex items-center font-semibold transition-all duration-200 ease-in-out hover:scale-105">
+                    <i class="fas fa-arrow-left mr-3"></i> Previous
+                </button>
+                <div class="text-base text-gray-400">Slide 4 of 5</div>
+                <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center font-semibold shadow-md transition-all duration-200 ease-in-out hover:scale-105">
+                    Next <i class="fas fa-arrow-right ml-3"></i>
+                </button>
+            </div>
+        </div>
 
-        <section class="my-24">
-            <h2 class="text-3xl font-bold text-center mb-4">Project Roadmap: 20 Weeks to Launch</h2>
-            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-16">Our agile, phased approach ensures rapid development, continuous improvement, and production readiness in under five months, with clear deliverables at each stage.</p>
-            <div class="relative pl-8 border-l-2 border-dashed border-[#118AB2]">
-                <div class="timeline-item mb-12">
-                    <h4 class="text-xl font-bold text-[#FF6B6B] mb-2">Phase 1: Foundation (Weeks 1-4)</h4>
-                    <p class="text-gray-600">Establish the ICP development environment, basic canister architecture, core data models, and integrate Internet Identity for secure authentication.</p>
+        <!-- Slide 5: Success Metrics -->
+        <div class="slide bg-gray-950 rounded-3xl shadow-xl overflow-hidden border border-gray-800">
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-900 p-8 text-white text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight text-shadow-blue">Success Metrics & Conclusion</h1>
+                <p class="text-blue-300 text-lg mt-3 opacity-90">Measuring our impact and outlining future steps</p>
+            </div>
+            <div class="p-8">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-5">Key Performance Indicators (KPIs)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="feature-card p-6 rounded-2xl bg-green-950 bg-opacity-30 border border-green-900">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-green-400 text-xl">Processing Speed</h3>
+                                <span class="bg-green-900 text-green-400 px-3 py-1 rounded-full text-sm font-bold shadow-sm">>95% Target</span>
+                            </div>
+                            <p class="text-base text-gray-200 mb-3">Average end-to-end quote generation time targeted to be under 30 seconds.</p>
+                            <div class="mt-3 flex items-center">
+                                <i class="fas fa-tachometer-alt text-green-500 text-xl mr-3"></i>
+                                <div class="w-full bg-gray-800 rounded-full h-3">
+                                    <div class="bg-green-500 h-3 rounded-full" style="width: 95%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl bg-green-950 bg-opacity-30 border border-green-900">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-green-400 text-xl">User Satisfaction</h3>
+                                <span class="bg-green-900 text-green-400 px-3 py-1 rounded-full text-sm font-bold shadow-sm">90% Target</span>
+                            </div>
+                            <p class="text-base text-gray-200 mb-3">Measured via in-app surveys, direct feedback, and user engagement metrics.</p>
+                            <div class="mt-3 flex items-center">
+                                <i class="fas fa-smile-beam text-green-500 text-xl mr-3"></i>
+                                <div class="w-full bg-gray-800 rounded-full h-3">
+                                    <div class="bg-green-500 h-3 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl bg-green-950 bg-opacity-30 border border-green-900">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-green-400 text-xl">Cost Reduction</h3>
+                                <span class="bg-green-900 text-green-400 px-3 py-1 rounded-full text-sm font-bold shadow-sm">70% Target</span>
+                            </div>
+                            <p class="text-base text-gray-200 mb-3">Significant reduction in manual underwriting operational costs post-implementation.</p>
+                            <div class="mt-3 flex items-center">
+                                <i class="fas fa-money-bill-wave text-green-500 text-xl mr-3"></i>
+                                <div class="w-full bg-gray-800 rounded-full h-3">
+                                    <div class="bg-green-500 h-3 rounded-full" style="width: 70%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-card p-6 rounded-2xl bg-green-950 bg-opacity-30 border border-green-900">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-bold text-green-400 text-xl">Market Share</h3>
+                                <span class="bg-green-900 text-green-400 px-3 py-1 rounded-full text-sm font-bold shadow-sm">15% Target</span>
+                            </div>
+                            <p class="text-base text-gray-200 mb-3">Ambitious goal to capture 15% of the digital-first motor vehicle insurance market.</p>
+                            <div class="mt-3 flex items-center">
+                                <i class="fas fa-chart-pie text-green-500 text-xl mr-3"></i>
+                                <div class="w-full bg-gray-800 rounded-full h-3">
+                                    <div class="bg-green-500 h-3 rounded-full" style="width: 15%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="timeline-item mb-12">
-                    <h4 class="text-xl font-bold text-[#FFD166] mb-2">Phase 2: Core Features (Weeks 5-10)</h4>
-                    <p class="text-gray-600">Develop the functional chatbot interface, implement a basic ML risk model, build the quote generation engine, and create the primary React frontend.</p>
-                </div>
-                <div class="timeline-item mb-12">
-                     <h4 class="text-xl font-bold text-[#06D6A0] mb-2">Phase 3: AI Enhancement (Weeks 11-16)</h4>
-                    <p class="text-gray-600">Train advanced, high-accuracy ML models, refine natural language understanding, and optimize model inference for real-time performance within the WASM environment.</p>
-                </div>
-                <div class="timeline-item">
-                     <h4 class="text-xl font-bold text-[#118AB2] mb-2">Phase 4: Production Readiness (Weeks 17-20)</h4>
-                    <p class="text-gray-600">Deploy to ICP mainnet, conduct thorough security audits and user acceptance testing, and finalize comprehensive documentation for a successful public launch.</p>
+
+                <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800 text-center">
+                    <h2 class="text-2xl font-semibold text-cyan-400 mb-4">Join Us in Revolutionizing Insurance!</h2>
+                    <p class="text-lg text-gray-200 mb-6">
+                        Our AI-powered underwriting system is set to redefine efficiency, accuracy, and user experience in the motor vehicle insurance sector.
+                    </p>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
+                        <i class="fas fa-handshake mr-3"></i> Let's Connect
+                    </button>
                 </div>
             </div>
-        </section>
-        
-        <section class="my-24 section-bg-light">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="font-bold text-xl text-center mb-4">Total Estimated Investment</h3>
-                    <p class="text-center text-sm text-gray-600 mb-4">A clear breakdown of the $272,000 required to bring InsuAi to market and support its first year of operations, ensuring transparency.</p>
-                    <div class="chart-container"><canvas id="budgetChart"></canvas></div>
-                </div>
-                <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-center">
-                    <h3 class="font-bold text-xl text-center mb-4">Built on a Future-Proof Stack</h3>
-                     <p class="text-center text-gray-600 mb-6">We leverage robust, cutting-edge technologies to ensure unparalleled performance, security, and scalability for InsuAi.</p>
-                     <div class="space-y-4 text-center">
-                        <div class="font-semibold text-lg text-[#073B4C]">🌐 Internet Computer (ICP)</div>
-                        <div class="font-semibold text-lg text-[#073B4C]">🦀 Rust & Motoko</div>
-                        <div class="font-semibold text-lg text-[#073B4C]">⚛️ React & Tailwind CSS</div>
-                        <div class="font-semibold text-lg text-[#073B4C]">🧠 Candle (On-Chain AI/ML)</div>
-                     </div>
-                </div>
+            <div class="bg-gray-900 px-8 py-4 border-t border-gray-800 flex justify-between items-center">
+                <button onclick="prevSlide()" class="text-blue-400 hover:text-blue-300 px-6 py-3 rounded-xl flex items-center font-semibold transition-all duration-200 ease-in-out hover:scale-105">
+                    <i class="fas fa-arrow-left mr-3"></i> Previous
+                </button>
+                <div class="text-base text-gray-400">Slide 5 of 5</div>
+                <button onclick="goToFirstSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center font-semibold shadow-md transition-all duration-200 ease-in-out hover:scale-105">
+                    Restart <i class="fas fa-redo ml-3"></i>
+                </button>
             </div>
-        </section>
-
-        <footer class="text-center my-12 pt-8 border-t border-gray-200">
-            <p class="text-gray-500 text-lg font-medium">InsuAi | Revolutionizing Insurance, One Conversation at a Time.</p>
-            <p class="text-sm text-gray-400 mt-2">Document Version: 1.0 | June 28, 2025</p>
-        </footer>
-
+        </div>
     </div>
 
     <script>
-        const FONT_COLOR = '#073B4C';
-        const PALETTE = {
-            red: '#FF6B6B',
-            yellow: '#FFD166',
-            green: '#06D6A0',
-            blue: '#118AB2',
-            darkBlue: '#073B4C',
-            lightGray: '#F8F9FA',
-            mediumGray: '#E9ECEF'
-        };
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
 
-        const wrapLabel = (label, maxLength = 16) => {
-            if (label.length <= maxLength) {
-                return label;
-            }
-            const words = label.split(' ');
-            const lines = [];
-            let currentLine = '';
-            for (const word of words) {
-                if ((currentLine + ' ' + word).trim().length > maxLength) {
-                    lines.push(currentLine.trim());
-                    currentLine = word;
-                } else {
-                    currentLine = (currentLine + ' ' + word).trim();
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
                 }
-            }
-            if (currentLine) {
-                lines.push(currentLine.trim());
-            }
-            return lines;
-        };
-        
-        const tooltipTitleCallback = (tooltipItems) => {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            if (Array.isArray(label)) {
-                return label.join(' ');
-            }
-            return label;
-        };
+            });
+            currentSlide = index;
+        }
 
-        const COMMON_CHART_OPTIONS = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: FONT_COLOR,
-                        font: {
-                            family: "'Inter', sans-serif",
-                            size: 14
-                        }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        title: tooltipTitleCallback
-                    },
-                    bodyFont: {
-                        family: "'Inter', sans-serif"
-                    },
-                    titleFont: {
-                        family: "'Inter', sans-serif",
-                        weight: 'bold'
-                    },
-                    backgroundColor: 'rgba(7, 59, 76, 0.9)',
-                    titleColor: '#ffffff',
-                    bodyColor: '#ffffff',
-                    borderColor: PALETTE.blue,
-                    borderWidth: 1,
-                    cornerRadius: 4
-                }
-            },
-            color: FONT_COLOR,
-            font: {
-                family: "'Inter', sans-serif"
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                showSlide(currentSlide + 1);
+            } else {
+                // Optionally loop back to the first slide or show a final message
+                showSlide(0); // Loops back to the first slide
             }
-        };
+        }
 
-        new Chart(document.getElementById('accuracyChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Target Accuracy', 'Remainder'],
-                datasets: [{
-                    data: [95, 5],
-                    backgroundColor: [PALETTE.green, PALETTE.mediumGray],
-                    borderColor: '#ffffff',
-                    borderWidth: 4,
-                }]
-            },
-            options: { ...COMMON_CHART_OPTIONS, cutout: '70%',
-                plugins: {
-                    ...COMMON_CHART_OPTIONS.plugins,
-                    tooltip: { enabled: false }
-                }
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
             }
-        });
+        }
 
-        new Chart(document.getElementById('satisfactionChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['User Satisfaction', 'Remainder'],
-                datasets: [{
-                    data: [90, 10],
-                    backgroundColor: [PALETTE.blue, PALETTE.mediumGray],
-                    borderColor: '#ffffff',
-                    borderWidth: 4,
-                }]
-            },
-            options: { ...COMMON_CHART_OPTIONS, cutout: '70%',
-                 plugins: {
-                    ...COMMON_CHART_OPTIONS.plugins,
-                    tooltip: { enabled: false }
-                }
-            }
-        });
-        
-        new Chart(document.getElementById('costReductionChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Cost Reduction'],
-                datasets: [{
-                    label: 'Reduction Target (%)',
-                    data: [70],
-                    backgroundColor: [PALETTE.yellow],
-                    borderColor: [PALETTE.darkBlue],
-                    borderWidth: 1,
-                    barPercentage: 0.5,
-                }]
-            },
-            options: { ...COMMON_CHART_OPTIONS, 
-                indexAxis: 'y',
-                scales: {
-                    x: { 
-                        beginAtZero: true, 
-                        max: 100, 
-                        grid: { display: false },
-                        ticks: { color: FONT_COLOR, font: { family: "'Inter', sans-serif" } }
-                    },
-                    y: { grid: { display: false }, ticks: { color: FONT_COLOR, font: { family: "'Inter', sans-serif" } } }
-                },
-                plugins: { ...COMMON_CHART_OPTIONS.plugins, legend: { display: false } }
-            }
-        });
+        function goToFirstSlide() {
+            showSlide(0);
+        }
 
-        new Chart(document.getElementById('marketGrowthChart'), {
-            type: 'line',
-            data: {
-                labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5 (Proj.)'],
-                datasets: [{
-                    label: 'Market Growth (%)',
-                    data: [8, 9, 10.5, 11, 12],
-                    fill: true,
-                    borderColor: PALETTE.blue,
-                    backgroundColor: 'rgba(17, 138, 178, 0.15)',
-                    tension: 0.4,
-                    pointBackgroundColor: PALETTE.blue,
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5
-                }]
-            },
-            options: { ...COMMON_CHART_OPTIONS,
-                scales: {
-                    y: { beginAtZero: false, ticks: { color: FONT_COLOR, font: { family: "'Inter', sans-serif" } } },
-                    x: { ticks: { color: FONT_COLOR, font: { family: "'Inter', sans-serif" } } }
-                }
-            }
-        });
-
-        new Chart(document.getElementById('digitalPreferenceChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Prefer Digital-First', 'Prefer Traditional'],
-                datasets: [{
-                    data: [70, 30],
-                    backgroundColor: [PALETTE.green, PALETTE.red],
-                    borderColor: '#ffffff',
-                    borderWidth: 4,
-                }]
-            },
-            options: { ...COMMON_CHART_OPTIONS, cutout: '60%' }
-        });
-
-        new Chart(document.getElementById('budgetChart'), {
-            type: 'pie',
-            data: {
-                labels: [wrapLabel('Development Costs ($195k)'), wrapLabel('Annual Operational Costs ($77k)')],
-                datasets: [{
-                    data: [195000, 77000],
-                    backgroundColor: [PALETTE.blue, PALETTE.yellow],
-                    borderColor: '#ffffff',
-                    borderWidth: 4,
-                }]
-            },
-            options: { ...COMMON_CHART_OPTIONS,
-                plugins: {
-                    ...COMMON_CHART_OPTIONS.plugins,
-                    legend: { position: 'bottom' }
-                }
-            }
+        // Initialize the first slide on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showSlide(0);
         });
     </script>
 </body>
